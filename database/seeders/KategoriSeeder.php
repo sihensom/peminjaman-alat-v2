@@ -10,10 +10,12 @@ class KategoriSeeder extends Seeder
     public function run(): void
     {
         $kategoris = [
-            ['nama_kategori' => 'Elektronik', 'deskripsi' => 'Alat-alat elektronik seperti kamera, proyektor, dll.'],
-            ['nama_kategori' => 'Perkakas', 'deskripsi' => 'Alat pertukangan seperti bor, gergaji, dll.'],
-            ['nama_kategori' => 'Audio Visual', 'deskripsi' => 'Peralatan pendukung audio dan visual.'],
-            ['nama_kategori' => 'Olahraga', 'deskripsi' => 'Alat-alat olahraga.'],
+            ['nama_kategori' => 'Perangkat Komputer', 'deskripsi' => 'Perangkat utama seperti Laptop, PC Desktop, Server.'],
+            ['nama_kategori' => 'Peripheral Komputer', 'deskripsi' => 'Alat input/output pendukung seperti Keyboard, Mouse, Flashdisk, Harddisk Eksternal.'],
+            ['nama_kategori' => 'Audio Visual & Proyeksi', 'deskripsi' => 'Proyektor/LCD, Layar Proyektor, Kamera, Mikrofon, Speaker.'],
+            ['nama_kategori' => 'Kabel & Koneksi', 'deskripsi' => 'Berbagai macam kabel: Kabel Oloran/Rol, HDMI, VGA, Power, UTP, Audio.'],
+            ['nama_kategori' => 'Jaringan (Networking)', 'deskripsi' => 'Router, Switch Hub, Tang Crimping, LAN Tester, Access Point.'],
+            ['nama_kategori' => 'Perkakas Teknisi', 'deskripsi' => 'Obeng set, Solder, Blower, Multitester.'],
         ];
 
         foreach ($kategoris as $k) {

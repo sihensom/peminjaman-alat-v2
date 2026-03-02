@@ -22,7 +22,7 @@
                 </svg>
             </div>
 
-            @if(Auth::user()->role !== 'peminjam')
+            @if(Auth::user()->role === 'admin')
                 <a href="{{ route('alats.create') }}" class="btn-primary flex items-center gap-2 shadow-indigo-500/20 shadow-lg">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
                     Tambah Alat Baru
@@ -82,7 +82,7 @@
                                         <span class="text-xs font-semibold capitalize">{{ $alat->kondisi }}</span>
                                     </div>
                                 </td>
-                                @if(Auth::user()->role !== 'peminjam')
+                                @if(Auth::user()->role === 'admin')
                                     <td class="px-6 py-4 text-right">
                                         <div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                             <a href="{{ route('alats.edit', $alat) }}" class="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-all" title="Edit Alat">

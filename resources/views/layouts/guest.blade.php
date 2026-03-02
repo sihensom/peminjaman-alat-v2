@@ -27,16 +27,19 @@
         <div class="fixed top-6 right-6 z-50">
             <x-theme-toggle />
         </div>
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100 dark:bg-slate-950 transition-colors duration-300">
-            <div>
-                <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-                </a>
-            </div>
-
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
+        <div class="min-h-screen flex flex-col justify-center items-center p-6 bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
+            <div class="w-full">
                 {{ $slot }}
             </div>
         </div>
+        <script>
+            function togglePassword(inputId, btn) {
+                const input = document.getElementById(inputId);
+                const isPassword = input.type === 'password';
+                input.type = isPassword ? 'text' : 'password';
+                btn.querySelector('.eye-off').classList.toggle('hidden', isPassword);
+                btn.querySelector('.eye-on').classList.toggle('hidden', !isPassword);
+            }
+        </script>
     </body>
 </html>

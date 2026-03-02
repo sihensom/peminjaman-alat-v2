@@ -17,7 +17,7 @@
         <div class="card-premium overflow-hidden bg-gradient-to-b from-card to-muted/20">
             <div class="h-1.5 bg-gradient-to-r from-indigo-500 to-primary"></div>
             
-            <form method="POST" action="{{ route('pengembalians.store') }}" class="p-8 space-y-8">
+            <form method="POST" action="{{ Auth::user()->role === 'petugas' ? route('petugas.pengembalians.store') : route('pengembalians.store') }}" class="p-8 space-y-8">
                 @csrf
                 
                 <div class="space-y-6">
@@ -56,7 +56,7 @@
                 </div>
 
                 <div class="flex items-center justify-end gap-6 pt-10 mt-10">
-                    <a href="{{ route('pengembalians.index') }}" class="text-xs font-black uppercase tracking-widest text-muted-foreground hover:text-foreground transition-all">Batalkan</a>
+                    <a href="{{ Auth::user()->role === 'petugas' ? route('petugas.pengembalians.index') : route('pengembalians.index') }}" class="text-xs font-black uppercase tracking-widest text-muted-foreground hover:text-foreground transition-all">Batalkan</a>
                     <button type="submit" class="px-8 py-3 bg-indigo-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-xl shadow-indigo-500/20 hover:shadow-indigo-500/40 hover:-translate-y-0.5 active:translate-y-0 transition-all">
                         Proses Pengembalian Alat
                     </button>

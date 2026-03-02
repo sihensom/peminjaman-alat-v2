@@ -30,9 +30,16 @@ class ReportController extends Controller
         return view('reports.monthly', compact('peminjamans', 'pengembalians', 'totalFines', 'month', 'year'));
     }
 
-    public function audit()
+    public function audit(Request $request)
     {
-        $logs = ActivityLog::with('user')->latest()->paginate(20);
+        $query = ActivityLog::with('user')->latest();
+
+        // Filter by action type if provided
+        if ($request->filled('filter')) {
+            $query->where('action', $request->input('filter'));
+        }
+
+        $logs = $query->paginate(25);
         return view('reports.audit', compact('logs'));
     }
 

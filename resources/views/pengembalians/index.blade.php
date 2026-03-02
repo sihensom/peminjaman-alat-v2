@@ -22,8 +22,8 @@
                 </svg>
             </div>
 
-            @if(Auth::user()->role !== 'peminjam')
-                <a href="{{ route('pengembalians.create') }}" class="btn-primary flex items-center gap-2 shadow-indigo-500/20 shadow-lg">
+            @if(Auth::user()->role === 'petugas')
+                <a href="{{ route('petugas.pengembalians.create') }}" class="btn-primary flex items-center gap-2 shadow-indigo-500/20 shadow-lg">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                     Proses Pengembalian
                 </a>
@@ -79,7 +79,19 @@
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 text-right">
-                                    <a href="{{ route('pengembalians.show', $p) }}" class="px-3 py-1.5 bg-muted hover:bg-border text-foreground rounded-lg text-xs font-bold transition-all">Detail</a>
+                                    @php
+                                        $showRoute = Auth::user()->role === 'peminjam' ? route('peminjam.pengembalians.show', $p) : (Auth::user()->role === 'petugas' ? route('petugas.pengembalians.show', $p) : route('pengembalians.show', $p));
+                                    @endphp
+                                    <div class="flex justify-end items-center gap-2">
+                                        <a href="{{ $showRoute }}" class="px-3 py-1.5 bg-muted hover:bg-border text-foreground rounded-lg text-xs font-bold transition-all">Detail</a>
+                                        @if(Auth::user()->role === 'admin')
+                                            <a href="{{ route('pengembalians.edit', $p) }}" class="px-3 py-1.5 bg-amber-500/10 text-amber-600 hover:bg-amber-500 hover:text-white rounded-lg text-xs font-bold transition-all">Edit</a>
+                                            <form method="POST" action="{{ route('pengembalians.destroy', $p) }}" class="inline-block" onsubmit="return confirm('Hapus data pengembalian #{{ $p->id }}?')">
+                                                @csrf @method('DELETE')
+                                                <button type="submit" class="px-3 py-1.5 bg-destructive/10 text-destructive hover:bg-destructive hover:text-white rounded-lg text-xs font-bold transition-all">Hapus</button>
+                                            </form>
+                                        @endif
+                                    </div>
                                 </td>
                             </tr>
                         @empty

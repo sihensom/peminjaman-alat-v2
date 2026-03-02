@@ -14,8 +14,11 @@
             </div>
             
             <div class="flex gap-3">
-                @if($peminjaman->status === 'disetujui' && Auth::user()->role !== 'peminjam')
-                    <a href="{{ route('pengembalians.create', ['peminjaman_id' => $peminjaman->id]) }}" class="px-4 py-2 bg-indigo-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-500/20">
+                @if($peminjaman->status === 'disetujui' && Auth::user()->role === 'petugas')
+                    @php
+                        $createRoute = route('petugas.pengembalians.create', ['peminjaman_id' => $peminjaman->id]);
+                    @endphp
+                    <a href="{{ $createRoute }}" class="px-4 py-2 bg-indigo-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-500/20">
                         Proses Pengembalian
                     </a>
                 @endif
@@ -125,7 +128,7 @@
                     </div>
                 </div>
 
-                @if($peminjaman->status === 'pending' && Auth::user()->role !== 'peminjam')
+                @if($peminjaman->status === 'menunggu' && Auth::user()->role === 'petugas')
                     <div class="card-premium p-6 space-y-4">
                         <h4 class="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Moderasi Admin</h4>
                         <div class="flex gap-3">
@@ -146,7 +149,14 @@
         </div>
 
         <div class="flex justify-start">
-            <a href="{{ route('peminjamans.index') }}" class="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-muted-foreground hover:text-foreground transition-all">
+            @php
+                $backRoute = Auth::user()->role === 'peminjam'
+                    ? route('peminjam.peminjamans.index')
+                    : (Auth::user()->role === 'petugas'
+                        ? route('petugas.peminjamans.index')
+                        : route('peminjamans.index'));
+            @endphp
+            <a href="{{ $backRoute }}" class="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-muted-foreground hover:text-foreground transition-all">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
                 Daftar Peminjaman
             </a>

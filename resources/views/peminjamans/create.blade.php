@@ -17,7 +17,7 @@
         <div class="card-premium overflow-hidden bg-gradient-to-b from-card to-muted/20">
             <div class="h-2 bg-gradient-to-r from-emerald-500 via-teal-500 to-primary"></div>
             
-            <form method="POST" action="{{ route('peminjamans.store') }}" class="p-8 space-y-10">
+            <form method="POST" action="{{ Auth::user()->role === 'peminjam' ? route('peminjam.peminjamans.store') : route('peminjamans.store') }}" class="p-8 space-y-10">
                 @csrf
                 
                 @if(Auth::user()->role !== 'peminjam')
@@ -100,7 +100,7 @@
                 </div>
 
                 <div class="flex items-center justify-end gap-6 pt-10 border-t border-border mt-10">
-                    <a href="{{ route('peminjamans.index') }}" class="text-xs font-black uppercase tracking-widest text-muted-foreground hover:text-foreground transition-all">Kembali</a>
+                    <a href="{{ Auth::user()->role === 'peminjam' ? route('peminjam.peminjamans.index') : route('peminjamans.index') }}" class="text-xs font-black uppercase tracking-widest text-muted-foreground hover:text-foreground transition-all">Kembali</a>
                     <button type="submit" class="px-10 py-4 bg-emerald-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-xl shadow-emerald-500/20 hover:shadow-emerald-500/40 hover:-translate-y-0.5 active:translate-y-0 transition-all">
                         Kirim Pengajuan Pinjam
                     </button>

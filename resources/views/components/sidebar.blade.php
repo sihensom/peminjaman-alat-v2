@@ -20,7 +20,7 @@
 
     <div class="flex-1 overflow-y-auto py-6 custom-scrollbar px-3">
         <nav class="space-y-6">
-            <!-- General -->
+            <!-- Dashboard (Semua Role) -->
             <div>
                 <p class="px-3 mb-2 text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] hidden md:block">Menu Utama</p>
                 <div class="space-y-1">
@@ -30,11 +30,16 @@
                 </div>
             </div>
 
-            @if(Auth::user()->role === 'admin' || Auth::user()->role === 'petugas')
-                <!-- Management -->
+            {{-- ============================================= --}}
+            {{-- ADMIN SIDEBAR --}}
+            {{-- ============================================= --}}
+            @if(Auth::user()->role === 'admin')
                 <div>
-                    <p class="px-3 mb-2 text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] hidden md:block">Inventori</p>
+                    <p class="px-3 mb-2 text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] hidden md:block">Manajemen</p>
                     <div class="space-y-1">
+                        <x-sidebar-link :href="route('users.index')" :active="request()->routeIs('users.*')" icon="users">
+                            Kelola User
+                        </x-sidebar-link>
                         <x-sidebar-link :href="route('kategoris.index')" :active="request()->routeIs('kategoris.*')" icon="tags">
                             Kategori
                         </x-sidebar-link>
@@ -43,31 +48,72 @@
                         </x-sidebar-link>
                     </div>
                 </div>
-            @endif
-
-            <!-- Transactions -->
-            <div>
-                <p class="px-3 mb-2 text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] hidden md:block">Transaksi</p>
-                <div class="space-y-1">
-                    <x-sidebar-link :href="route('peminjamans.index')" :active="request()->routeIs('peminjamans.*')" icon="calendar-clock">
-                        Peminjaman
-                    </x-sidebar-link>
-                    <x-sidebar-link :href="route('pengembalians.index')" :active="request()->routeIs('pengembalians.*')" icon="refresh-cw">
-                        Pengembalian
-                    </x-sidebar-link>
+                <div>
+                    <p class="px-3 mb-2 text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] hidden md:block">Transaksi</p>
+                    <div class="space-y-1">
+                        <x-sidebar-link :href="route('peminjamans.index')" :active="request()->routeIs('peminjamans.*')" icon="calendar-clock">
+                            Peminjaman
+                        </x-sidebar-link>
+                        <x-sidebar-link :href="route('pengembalians.index')" :active="request()->routeIs('pengembalians.*')" icon="refresh-cw">
+                            Pengembalian
+                        </x-sidebar-link>
+                    </div>
                 </div>
-            </div>
-
-            @if(Auth::user()->role === 'admin')
-                <!-- Monitoring -->
                 <div>
                     <p class="px-3 mb-2 text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] hidden md:block">Sistem</p>
                     <div class="space-y-1">
-                        <x-sidebar-link :href="route('reports.monthly')" :active="request()->routeIs('reports.monthly')" icon="file-text">
-                            Laporan
-                        </x-sidebar-link>
                         <x-sidebar-link :href="route('reports.audit')" :active="request()->routeIs('reports.audit')" icon="shield-check">
-                            Audit Sistem
+                            Log Aktifitas
+                        </x-sidebar-link>
+                    </div>
+                </div>
+            @endif
+
+            {{-- ============================================= --}}
+            {{-- PETUGAS SIDEBAR --}}
+            {{-- ============================================= --}}
+            @if(Auth::user()->role === 'petugas')
+                <div>
+                    <p class="px-3 mb-2 text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] hidden md:block">Tugas</p>
+                    <div class="space-y-1">
+                        <x-sidebar-link :href="route('petugas.peminjamans.index')" :active="request()->routeIs('petugas.peminjamans.*')" icon="calendar-clock">
+                            Peminjaman
+                        </x-sidebar-link>
+                        <x-sidebar-link :href="route('petugas.pengembalians.index')" :active="request()->routeIs('petugas.pengembalians.*')" icon="refresh-cw">
+                            Pengembalian
+                        </x-sidebar-link>
+                    </div>
+                </div>
+                <div>
+                    <p class="px-3 mb-2 text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] hidden md:block">Laporan</p>
+                    <div class="space-y-1">
+                        <x-sidebar-link :href="route('reports.monthly')" :active="request()->routeIs('reports.monthly')" icon="file-text">
+                            Cetak Laporan
+                        </x-sidebar-link>
+                    </div>
+                </div>
+            @endif
+
+            {{-- ============================================= --}}
+            {{-- PEMINJAM SIDEBAR --}}
+            {{-- ============================================= --}}
+            @if(Auth::user()->role === 'peminjam')
+                <div>
+                    <p class="px-3 mb-2 text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] hidden md:block">Inventori</p>
+                    <div class="space-y-1">
+                        <x-sidebar-link :href="route('peminjam.alats.index')" :active="request()->routeIs('peminjam.alats.*')" icon="box">
+                            Daftar Alat
+                        </x-sidebar-link>
+                    </div>
+                </div>
+                <div>
+                    <p class="px-3 mb-2 text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] hidden md:block">Transaksi Saya</p>
+                    <div class="space-y-1">
+                        <x-sidebar-link :href="route('peminjam.peminjamans.index')" :active="request()->routeIs('peminjam.peminjamans.*')" icon="calendar-clock">
+                            Peminjaman Saya
+                        </x-sidebar-link>
+                        <x-sidebar-link :href="route('peminjam.pengembalians.index')" :active="request()->routeIs('peminjam.pengembalians.*')" icon="refresh-cw">
+                            Pengembalian Saya
                         </x-sidebar-link>
                     </div>
                 </div>
@@ -78,7 +124,7 @@
     <!-- User Profile Footer -->
     <div class="p-6 bg-slate-50 dark:bg-slate-900 shrink-0">
         <div class="flex items-center">
-            <div class="h-10 w-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-black text-xs shrink-0 shadow-lg shadow-indigo-600/20">
+            <div class="h-10 w-10 rounded-2xl {{ $roleColor }} text-white flex items-center justify-center font-black text-xs shrink-0 shadow-lg">
                 {{ substr(Auth::user()->name, 0, 2) }}
             </div>
             <div class="ml-3 hidden md:block overflow-hidden">

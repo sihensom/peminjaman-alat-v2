@@ -15,16 +15,30 @@
 
     <div class="space-y-6">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            @php
+                $baseUrl = Auth::user()->role === 'peminjam'
+                    ? route('peminjam.peminjamans.index')
+                    : (Auth::user()->role === 'petugas'
+                        ? route('petugas.peminjamans.index')
+                        : route('peminjamans.index'));
+                $activeClass = 'px-4 py-2 bg-indigo-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-indigo-600/20';
+                $inactiveClass = 'px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-xl text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:bg-slate-200 dark:hover:bg-slate-700 transition-all';
+            @endphp
             <div class="flex items-center gap-2">
-                <button class="px-4 py-2 bg-indigo-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-indigo-600/20">Semua</button>
-                <button class="px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-xl text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:bg-slate-200 transition-all">Menunggu</button>
-                <button class="px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-xl text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:bg-slate-200 transition-all">Aktif</button>
+                <a href="{{ $baseUrl }}" class="{{ is_null($status) ? $activeClass : $inactiveClass }}">Semua</a>
+                <a href="{{ $baseUrl }}?status=menunggu" class="{{ $status === 'menunggu' ? $activeClass : $inactiveClass }}">Menunggu</a>
+                <a href="{{ $baseUrl }}?status=aktif" class="{{ $status === 'aktif' ? $activeClass : $inactiveClass }}">Aktif</a>
             </div>
 
             @if(Auth::user()->role === 'peminjam')
-                <a href="{{ route('peminjamans.create') }}" class="btn-primary flex items-center gap-2 shadow-indigo-500/20 shadow-lg">
+                <a href="{{ route('peminjam.peminjamans.create') }}" class="btn-primary flex items-center gap-2 shadow-indigo-500/20 shadow-lg">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
                     Ajukan Peminjaman
+                </a>
+            @elseif(Auth::user()->role === 'admin')
+                <a href="{{ route('peminjamans.create') }}" class="btn-primary flex items-center gap-2 shadow-indigo-500/20 shadow-lg">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                    Tambah Peminjaman
                 </a>
             @endif
         </div>
@@ -85,9 +99,20 @@
                                 </td>
                                 <td class="px-6 py-4 text-right">
                                     <div class="flex justify-end items-center gap-2">
-                                        <a href="{{ route('peminjamans.show', $p) }}" class="px-3 py-1.5 bg-muted hover:bg-border text-foreground rounded-lg text-xs font-bold transition-all">Detail</a>
+                                        @php
+                                            $showRoute = Auth::user()->role === 'peminjam' ? route('peminjam.peminjamans.show', $p) : (Auth::user()->role === 'petugas' ? route('petugas.peminjamans.show', $p) : route('peminjamans.show', $p));
+                                        @endphp
+                                        <a href="{{ $showRoute }}" class="px-3 py-1.5 bg-muted hover:bg-border text-foreground rounded-lg text-xs font-bold transition-all">Detail</a>
                                         
-                                        @if($p->status === 'menunggu' && (Auth::user()->role === 'admin' || Auth::user()->role === 'petugas'))
+                                        @if(Auth::user()->role === 'admin')
+                                            <a href="{{ route('peminjamans.edit', $p) }}" class="px-3 py-1.5 bg-amber-500/10 text-amber-600 hover:bg-amber-500 hover:text-white rounded-lg text-xs font-bold transition-all">Edit</a>
+                                            <form method="POST" action="{{ route('peminjamans.destroy', $p) }}" class="inline-block" onsubmit="return confirm('Hapus peminjaman #{{ $p->id }}?')">
+                                                @csrf @method('DELETE')
+                                                <button type="submit" class="px-3 py-1.5 bg-destructive/10 text-destructive hover:bg-destructive hover:text-white rounded-lg text-xs font-bold transition-all">Hapus</button>
+                                            </form>
+                                        @endif
+
+                                        @if($p->status === 'menunggu' && Auth::user()->role === 'petugas')
                                             <div class="flex gap-1">
                                                 <form method="POST" action="{{ route('peminjamans.approve', $p) }}">
                                                     @csrf

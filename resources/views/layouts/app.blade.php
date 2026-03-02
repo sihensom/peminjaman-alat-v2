@@ -81,5 +81,109 @@
                 </main>
             </div>
         </div>
+
+        <!-- =========================================
+             GLOBAL TOAST NOTIFICATIONS
+             ========================================= -->
+        @if(session('success') || session('error') || session('warning') || session('info'))
+        <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-3 max-w-sm w-full">
+
+            @if(session('success'))
+            <div id="toast-success" class="flex items-start gap-3 w-full bg-white dark:bg-slate-900 border border-green-200 dark:border-green-800 rounded-2xl shadow-2xl shadow-green-500/10 p-4 animate-[slideIn_0.3s_ease-out]">
+                <div class="h-9 w-9 rounded-xl bg-green-500/10 flex items-center justify-center text-green-600 shrink-0">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-[10px] font-black uppercase tracking-widest text-green-600 mb-0.5">Berhasil</p>
+                    <p class="text-sm font-semibold text-foreground leading-snug">{{ session('success') }}</p>
+                </div>
+                <button onclick="dismissToast('toast-success')" class="text-muted-foreground hover:text-foreground transition-colors shrink-0">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            @endif
+
+            @if(session('error'))
+            <div id="toast-error" class="flex items-start gap-3 w-full bg-white dark:bg-slate-900 border border-red-200 dark:border-red-800 rounded-2xl shadow-2xl shadow-red-500/10 p-4 animate-[slideIn_0.3s_ease-out]">
+                <div class="h-9 w-9 rounded-xl bg-red-500/10 flex items-center justify-center text-red-600 shrink-0">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-[10px] font-black uppercase tracking-widest text-red-600 mb-0.5">Peringatan</p>
+                    <p class="text-sm font-semibold text-foreground leading-snug">{{ session('error') }}</p>
+                </div>
+                <button onclick="dismissToast('toast-error')" class="text-muted-foreground hover:text-foreground transition-colors shrink-0">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            @endif
+
+            @if(session('warning'))
+            <div id="toast-warning" class="flex items-start gap-3 w-full bg-white dark:bg-slate-900 border border-amber-200 dark:border-amber-800 rounded-2xl shadow-2xl shadow-amber-500/10 p-4 animate-[slideIn_0.3s_ease-out]">
+                <div class="h-9 w-9 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-600 shrink-0">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-[10px] font-black uppercase tracking-widest text-amber-600 mb-0.5">Perhatian</p>
+                    <p class="text-sm font-semibold text-foreground leading-snug">{{ session('warning') }}</p>
+                </div>
+                <button onclick="dismissToast('toast-warning')" class="text-muted-foreground hover:text-foreground transition-colors shrink-0">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            @endif
+
+            @if(session('info'))
+            <div id="toast-info" class="flex items-start gap-3 w-full bg-white dark:bg-slate-900 border border-indigo-200 dark:border-indigo-800 rounded-2xl shadow-2xl shadow-indigo-500/10 p-4 animate-[slideIn_0.3s_ease-out]">
+                <div class="h-9 w-9 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-600 shrink-0">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-[10px] font-black uppercase tracking-widest text-indigo-600 mb-0.5">Informasi</p>
+                    <p class="text-sm font-semibold text-foreground leading-snug">{{ session('info') }}</p>
+                </div>
+                <button onclick="dismissToast('toast-info')" class="text-muted-foreground hover:text-foreground transition-colors shrink-0">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            @endif
+
+        </div>
+        @endif
+        <script>
+            function togglePassword(inputId, btn) {
+                const input = document.getElementById(inputId);
+                const isPassword = input.type === 'password';
+                input.type = isPassword ? 'text' : 'password';
+                btn.querySelector('.eye-off').classList.toggle('hidden', isPassword);
+                btn.querySelector('.eye-on').classList.toggle('hidden', !isPassword);
+            }
+
+            // Toast notification system
+            function dismissToast(id) {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                    el.style.opacity = '0';
+                    el.style.transform = 'translateX(100%)';
+                    setTimeout(() => el.remove(), 300);
+                }
+            }
+
+            // Auto-dismiss all toasts after 4.5 seconds
+            document.addEventListener('DOMContentLoaded', function() {
+                const toastIds = ['toast-success', 'toast-error', 'toast-warning', 'toast-info'];
+                toastIds.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) setTimeout(() => dismissToast(id), 4500);
+                });
+            });
+        </script>
+        <style>
+            @@keyframes slideIn {
+                from { opacity: 0; transform: translateX(100%); }
+                to   { opacity: 1; transform: translateX(0); }
+            }
+        </style>
     </body>
 </html>

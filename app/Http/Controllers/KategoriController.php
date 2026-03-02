@@ -3,10 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kategori;
+use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 
 class KategoriController extends Controller
 {
+    private function logActivity($action, $description, $metadata = [])
+    {
+        ActivityLog::create([
+            'user_id'     => auth()->id(),
+            'action'      => $action,
+            'description' => $description,
+            'metadata'    => $metadata,
+            'ip_address'  => request()->ip(),
+        ]);
+    }
+
     public function index()
     {
         $kategoris = Kategori::all();
@@ -22,9 +34,14 @@ class KategoriController extends Controller
     {
         $validated = $request->validate([
             'nama_kategori' => 'required|string|max:255|unique:kategoris,nama_kategori',
+            'deskripsi'     => 'nullable|string',
         ]);
 
-        Kategori::create($validated);
+        $kategori = Kategori::create($validated);
+
+        $this->logActivity('create_kategori', "Menambahkan kategori baru: {$kategori->nama_kategori}", [
+            'kategori_id' => $kategori->id, 'nama_kategori' => $kategori->nama_kategori,
+        ]);
 
         return redirect()->route('kategoris.index')->with('success', 'Kategori berhasil ditambahkan.');
     }
@@ -43,16 +60,28 @@ class KategoriController extends Controller
     {
         $validated = $request->validate([
             'nama_kategori' => 'required|string|max:255|unique:kategoris,nama_kategori,' . $kategori->id,
+            'deskripsi'     => 'nullable|string',
         ]);
 
         $kategori->update($validated);
+
+        $this->logActivity('update_kategori', "Memperbarui kategori: {$kategori->nama_kategori}", [
+            'kategori_id' => $kategori->id, 'nama_kategori' => $kategori->nama_kategori,
+        ]);
 
         return redirect()->route('kategoris.index')->with('success', 'Kategori berhasil diperbarui.');
     }
 
     public function destroy(Kategori $kategori)
     {
+        $nama = $kategori->nama_kategori;
+        $id   = $kategori->id;
         $kategori->delete();
+
+        $this->logActivity('delete_kategori', "Menghapus kategori: {$nama}", [
+            'kategori_id' => $id, 'nama_kategori' => $nama,
+        ]);
+
         return redirect()->route('kategoris.index')->with('success', 'Kategori berhasil dihapus.');
     }
 }
