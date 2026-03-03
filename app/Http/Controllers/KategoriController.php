@@ -72,16 +72,35 @@ class KategoriController extends Controller
         return redirect()->route('kategoris.index')->with('success', 'Kategori berhasil diperbarui.');
     }
 
-    public function destroy(Kategori $kategori)
+    public function destroy(Request $request, Kategori $kategori)
     {
+        $alatCount = $kategori->alats()->count();
+
+        if ($alatCount > 0 && !$request->boolean('force')) {
+            return redirect()->route('kategoris.index')
+                ->with('delete_warning', [
+                    'id'    => $kategori->id,
+                    'nama'  => $kategori->nama_kategori,
+                    'count' => $alatCount,
+                ]);
+        }
+
+        if ($alatCount > 0) {
+            // Hapus detail_peminjaman yang terkait alat di kategori ini dulu
+            foreach ($kategori->alats as $alat) {
+                $alat->details()->delete();
+            }
+            $kategori->alats()->delete();
+        }
+
         $nama = $kategori->nama_kategori;
         $id   = $kategori->id;
         $kategori->delete();
 
-        $this->logActivity('delete_kategori', "Menghapus kategori: {$nama}", [
+        $this->logActivity('delete_kategori', "Menghapus kategori: {$nama}" . ($alatCount > 0 ? " (paksa, {$alatCount} alat ikut dihapus)" : ''), [
             'kategori_id' => $id, 'nama_kategori' => $nama,
         ]);
 
-        return redirect()->route('kategoris.index')->with('success', 'Kategori berhasil dihapus.');
+        return redirect()->route('kategoris.index')->with('success', "Kategori \"{$nama}\" berhasil dihapus.");
     }
 }

@@ -79,22 +79,33 @@ class AlatController extends Controller
         return redirect()->route('alats.index')->with('success', 'Alat berhasil diperbarui.');
     }
 
-    public function destroy(Alat $alat)
+    public function destroy(Request $request, Alat $alat)
     {
-        // Cek apakah alat masih digunakan di data peminjaman
-        if ($alat->details()->count() > 0) {
+        $detailCount = $alat->details()->count();
+
+        if ($detailCount > 0 && !$request->boolean('force')) {
+            // Ada relasi — redirect balik dengan info supaya modal force-delete muncul
             return redirect()->route('alats.index')
-                ->with('error', "Alat \"{$alat->nama_alat}\" tidak dapat dihapus karena masih terdapat data peminjaman yang menggunakan alat ini.");
+                ->with('delete_warning', [
+                    'id'    => $alat->id,
+                    'nama'  => $alat->nama_alat,
+                    'count' => $detailCount,
+                ]);
+        }
+
+        // Jika force delete — hapus detail peminjaman terkait dulu
+        if ($detailCount > 0) {
+            $alat->details()->delete();
         }
 
         $nama = $alat->nama_alat;
         $id   = $alat->id;
         $alat->delete();
 
-        $this->logActivity('delete_alat', "Menghapus alat: {$nama}", [
-            'alat_id' => $id, 'nama_alat' => $nama,
+        $this->logActivity('delete_alat', "Menghapus alat: {$nama}" . ($detailCount > 0 ? " (paksa, {$detailCount} detail peminjaman ikut dihapus)" : ''), [
+            'alat_id' => $id, 'nama_alat' => $nama, 'force' => $detailCount > 0,
         ]);
 
-        return redirect()->route('alats.index')->with('success', 'Alat berhasil dihapus.');
+        return redirect()->route('alats.index')->with('success', "Alat \"{$nama}\" berhasil dihapus.");
     }
 }
